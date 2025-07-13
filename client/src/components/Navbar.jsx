@@ -36,8 +36,8 @@ const Navbar = ({ setShowLogin }) => {
         >
           <input
             type="text"
-            className="py-1.5 w-full bg-transparent
-          outline-none placeholder:gray-500"
+            className="py-1.5 w-full bg-transparent 
+          outline-none placeholder:gray-500 "
             placeholder="Search products"
           />
           <img src={assets.search_icon} alt="Search" />
