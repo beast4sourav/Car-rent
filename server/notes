@@ -1,0 +1,5 @@
+ create a server.js file which is the main file of the backend 
+install dependices --- npm init -y
+install packages for the backend npm install express cors dotenv jsonwebtoken bcrypt mongoose
+cors-- is used to connect the backend to the frontend 
+make changes on the package.json file like this "type": "module",
