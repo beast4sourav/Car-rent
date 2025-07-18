@@ -179,37 +179,40 @@ const Addcar = () => {
         {/* car location*/}
 
         <div className="flex flex-col w-full">
-        <label>Location ({currency})</label>
-            <select
-              onChange={(e) => setCar({ ...car, location: e.target.value })}
-              value={car.location}
-              className="px-3 py-2 mt-1 border border-borderColor
+          <label>Location ({currency})</label>
+          <select
+            onChange={(e) => setCar({ ...car, location: e.target.value })}
+            value={car.location}
+            className="px-3 py-2 mt-1 border border-borderColor
             rounded-md outline-none"
-            >
-              <option value="">Select a Location</option>
-              <option value="New york">New york</option>
-              <option value="Los Angeles">Los Angeles</option>
-              <option value="Houston">Houston</option>
-              <option value="Chicago">Chicago</option>
-            </select>
+          >
+            <option value="">Select a Location</option>
+            <option value="New york">New york</option>
+            <option value="Los Angeles">Los Angeles</option>
+            <option value="Houston">Houston</option>
+            <option value="Chicago">Chicago</option>
+          </select>
         </div>
         {/* car Description*/}
         <div className="flex flex-col w-full">
-            <label>Description ({currency})</label>
-            <textarea rows={5}
-              placeholder="e.g. A luxurious SUV with a specious interior and a powerful engine."
-              required
-              className="px-3 py-2 mt-1 border border-borderColor rounded-md
+          <label>Description ({currency})</label>
+          <textarea
+            rows={5}
+            placeholder="e.g. A luxurious SUV with a specious interior and a powerful engine."
+            required
+            className="px-3 py-2 mt-1 border border-borderColor rounded-md
             outline-none"
-              value={car.description}
-              onChange={(e) => setCar({ ...car, description: e.target.value })}
-            ></textarea>
-          </div>
-          <button className="flex items-center gap-2 px-4 py-2.5 mt-4 bg-primary
-          text-white rounded-md font-medium w-max cursor-pointer">
-            <img src={assets.tick_icon} alt="" />
-            List Your Car
-          </button>
+            value={car.description}
+            onChange={(e) => setCar({ ...car, description: e.target.value })}
+          ></textarea>
+        </div>
+        <button
+          className="flex items-center gap-2 px-4 py-2.5 mt-4 bg-primary
+          text-white rounded-md font-medium w-max cursor-pointer"
+        >
+          <img src={assets.tick_icon} alt="" />
+          List Your Car
+        </button>
       </form>
     </div>
   );

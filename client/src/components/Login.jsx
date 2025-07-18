@@ -1,13 +1,34 @@
 import React from "react";
+import { useAppContext } from "../context/AppContext";
+import toast from "react-hot-toast";
 
-const Login = ({ setShowLogin }) => {
+const Login = () => {
+  const { setShowLogin, axios, setToken, navigate } = useAppContext();
   const [state, setState] = React.useState("login");
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
 
   const onSubmitHandler = async (event) => {
-    event.preventDefault();
+    try {
+      event.preventDefault();
+      const { data } = await axios.post(`/api/user/${state}`, {
+        name,
+        email,
+        password,
+      });
+
+      if (data.success) {
+        navigate("/");
+        setToken(data.token);
+        localStorage.setItem("token", data.token);
+        setShowLogin(false);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
   return (
     <div
@@ -30,6 +51,7 @@ const Login = ({ setShowLogin }) => {
             <input
               onChange={(e) => setName(e.target.value)}
               value={name}
+              autoComplete="name"
               placeholder="type here"
               className="border border-gray-200 rounded w-full p-2 mt-1 outline-primary"
               type="text"
@@ -42,6 +64,7 @@ const Login = ({ setShowLogin }) => {
           <input
             onChange={(e) => setEmail(e.target.value)}
             value={email}
+            autoComplete="email"
             placeholder="type here"
             className="border border-gray-200 rounded w-full p-2 mt-1 outline-primary"
             type="email"
@@ -52,6 +75,9 @@ const Login = ({ setShowLogin }) => {
           <p>Password</p>
           <input
             onChange={(e) => setPassword(e.target.value)}
+            autoComplete={
+              state === "login" ? "current-password" : "new-password"
+            }
             value={password}
             placeholder="type here"
             className="border border-gray-200 rounded w-full p-2 mt-1 outline-primary"

@@ -24,7 +24,8 @@ const Sidebar = () => {
                 : user?.image ||
                   "https://www.google.com/url?sa=i&url=https%3A%2F%2Fuxwing.com%2Fman-user-circle-icon%2F&psig=AOvVaw3x4Ya5V-ztfUGV0VO_9tsC&ust=1752420760214000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCPj9n5rSt44DFQAAAAAdAAAAABAE"
             }
-            alt="" className="h-9 md:h-14 w-9 md:w-14 rounded-full
+            alt=""
+            className="h-9 md:h-14 w-9 md:w-14 rounded-full
             mx-auto"
           />
           <input
