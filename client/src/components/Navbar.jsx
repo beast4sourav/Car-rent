@@ -5,7 +5,7 @@ import { useAppContext } from "../context/AppContext";
 import toast from "react-hot-toast";
 
 const Navbar = () => {
-  const { setShowLogin, user, logout, isOwner, axios, setIsOwner } =
+  const { setShowLogin, user, logout, isOwner, axios, setIsOwner, setToken } =
     useAppContext();
   const location = useLocation();
   const [open, setOpen] = useState(false);
@@ -16,6 +16,10 @@ const Navbar = () => {
       const { data } = await axios.post("/api/owner/change-role");
       if (data.success) {
         setIsOwner(true);
+        if (data.token) {
+          setToken(data.token);
+          localStorage.setItem("token", data.token);
+        }
         toast.success(data.message);
       } else {
         toast.error(data.message);

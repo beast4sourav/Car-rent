@@ -3,12 +3,17 @@ import User from "../models/User.js";
 import Car from "../models/Car.js";
 import fs from "fs";
 import Booking from "../models/Booking.js";
+import jwt from "jsonwebtoken";
 
 export const changeRoleToOwner = async (req, res) => {
   try {
     const { _id } = req.user;
     await User.findByIdAndUpdate(_id, { role: "owner" });
-    res.json({ success: true, message: "Now you car list cars" });
+    // Generate new token with updated role
+    const user = await User.findById(_id);
+    const payload = { id: user._id };
+    const token = jwt.sign(payload, process.env.JWT_SECRET);
+    res.json({ success: true, message: "Now you can list cars", token });
   } catch (error) {
     console.log(error.message);
     res.json({ success: false, message: error.message });

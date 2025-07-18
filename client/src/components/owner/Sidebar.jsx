@@ -1,14 +1,29 @@
 import React, { useState } from "react";
-import { assets, dummyUserData, ownerMenuLinks } from "../../assets/assets";
+import { assets,  ownerMenuLinks } from "../../assets/assets";
 import { NavLink, useLocation } from "react-router-dom";
+import { useAppContext } from "../../context/AppContext";
+import toast from "react-hot-toast";
 
 const Sidebar = () => {
-  const user = dummyUserData;
+  const {user, axios, fetchUser} = useAppContext()
   const location = useLocation();
   const [image, setImage] = useState("");
   const updateImage = async () => {
-    user.image = URL.createObjectURL(image);
-    setImage("");
+    try {
+      const formData = new FormData();
+      formData.append("image", image);
+
+      const { data } = await axios.post("/api/owner/update-image", formData )
+      if (data.success) {
+        fetchUser();
+        toast.success(data.message);
+        setImage("");
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
   return (
     <div
@@ -47,14 +62,13 @@ const Sidebar = () => {
       {image && (
         <button
           className="absolute top-0 right-0 flex p-2 gap-1 bg-primary/10
-        test-primary cursor-pointer"
+        test-primary cursor-pointer"onClick={updateImage}
         >
           Save{" "}
           <img
             src={assets.check_icon}
             width={13}
             alt=""
-            onClick={updateImage}
           />
         </button>
       )}
