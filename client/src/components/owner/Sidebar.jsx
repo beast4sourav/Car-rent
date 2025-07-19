@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { assets,  ownerMenuLinks } from "../../assets/assets";
+import { assets, ownerMenuLinks } from "../../assets/assets";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAppContext } from "../../context/AppContext";
 import toast from "react-hot-toast";
 
 const Sidebar = () => {
-  const {user, axios, fetchUser} = useAppContext()
+  const { user, axios, fetchUser } = useAppContext();
   const location = useLocation();
   const [image, setImage] = useState("");
   const updateImage = async () => {
@@ -13,7 +13,7 @@ const Sidebar = () => {
       const formData = new FormData();
       formData.append("image", image);
 
-      const { data } = await axios.post("/api/owner/update-image", formData )
+      const { data } = await axios.post("/api/owner/update-image", formData);
       if (data.success) {
         fetchUser();
         toast.success(data.message);
@@ -62,14 +62,10 @@ const Sidebar = () => {
       {image && (
         <button
           className="absolute top-0 right-0 flex p-2 gap-1 bg-primary/10
-        test-primary cursor-pointer"onClick={updateImage}
+        test-primary cursor-pointer"
+          onClick={updateImage}
         >
-          Save{" "}
-          <img
-            src={assets.check_icon}
-            width={13}
-            alt=""
-          />
+          Save <img src={assets.check_icon} width={13} alt="" />
         </button>
       )}
       <p className="mt-2 text-base max-md:hidden">{user?.name}</p>

@@ -1,31 +1,47 @@
-import React, {useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { assets, dummyCarData } from "../assets/assets";
 import Loader from "../components/Loader";
 import { useAppContext } from "../context/AppContext";
 import toast from "react-hot-toast";
+import { motion } from "motion/react";
 
 const CarDetails = () => {
   const { id } = useParams();
-  const {cars, axios, pickupDate, setpickupDate, returnDate, setreturnDate} =
-    useAppContext()
+  const { cars, axios, pickupDate, setpickupDate, returnDate, setreturnDate } =
+    useAppContext();
   const navigate = useNavigate();
   const [car, setCar] = useState(null);
   const currency = import.meta.env.VITE_CURRENCY;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validate dates
+    if (!pickupDate || !returnDate) {
+      toast.error("Please select both pickup and return dates");
+      return;
+    }
+
+    if (new Date(returnDate) <= new Date(pickupDate)) {
+      toast.error("Return date must be after pickup date");
+      return;
+    }
+
     try {
-      const {data} =  await axios.post("/api/bookings/create",{car: car._id, pickupDate, returnDate});
+      const { data } = await axios.post("/api/bookings/create", {
+        car: car._id,
+        pickupDate,
+        returnDate,
+      });
       if (data.success) {
-        toast.success(data.message)
-        navigate('/my-bookings')
-      }else{
-        toast.error(data.message)
+        toast.success(data.message);
+        navigate("/my-bookings");
+      } else {
+        toast.error(data.message);
       }
-        
     } catch (error) {
-      toast.error(error.message)
+      toast.error(error.message);
     }
   };
   useEffect(() => {
@@ -43,14 +59,27 @@ const CarDetails = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
         {/*Left: Car Image & Details*/}
-        <div className="lg:col-span-2">
-          <img
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="lg:col-span-2"
+        >
+          <motion.img
+            initial={{ scale: 0.98, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.5 }}
             src={car.image}
             alt=""
             className="w-full h-auto md:max-h-100
             object-cover rounded-xl mb-6 shadow-md"
           />
-          <div className="space-y-6">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="space-y-6"
+          >
             <div>
               <h1 className="text-3xl font-bold">
                 {car.brand} {car.model}
@@ -70,13 +99,16 @@ const CarDetails = () => {
                 { icon: assets.car_icon, text: car.transmission },
                 { icon: assets.location_icon, text: car.location },
               ].map(({ icon, text }) => (
-                <div
+                <motion.div
+                  initial={{ opacity: 0, y:10 }}
+                  animate={{ opacity: 1, y:0 }}
+                  transition={{ duration: 0.4 }}
                   key={text}
                   className="flex flex-col items-center bg-light p-4 rounded-lg"
                 >
                   <img src={icon} alt="" className="h-5 mb-2" />
                   {text}
-                </div>
+                </motion.div>
               ))}
             </div>
             <div className="">
@@ -100,10 +132,13 @@ const CarDetails = () => {
                 ))}
               </ul>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
         {/*Right: Booking Form */}
-        <form
+        <motion.form
+        initial={{ opacity: 0, y:30}}
+        animate={{ opacity: 1, y:0}}
+        transition={{delay:0.3, duration: 0.6 }}
           onSubmit={handleSubmit}
           className="shadow-lg h-max sticky top-18 rounded-xl p-6 space-y-6
           text-gray-500"
@@ -125,7 +160,9 @@ const CarDetails = () => {
 
           <div className="flex flex-col gap-2">
             <label htmlFor="pickup-date"> Pickup Date</label>
-            <input value={pickupDate} onChange={(e)=>setpickupDate(e.target.value)}
+            <input
+              value={pickupDate}
+              onChange={(e) => setpickupDate(e.target.value)}
               type="date"
               className="border border-borderColor px-3 py-2 
             rounded-lg"
@@ -137,12 +174,15 @@ const CarDetails = () => {
 
           <div className="flex flex-col gap-2">
             <label htmlFor="return-date"> Return Date</label>
-            <input value={returnDate} onChange={(e)=>setreturnDate(e.target.value)}
+            <input
+              value={returnDate}
+              onChange={(e) => setreturnDate(e.target.value)}
               type="date"
               className="border border-borderColor px-3 py-2 
             rounded-lg"
               required
               id="return-date"
+              min={pickupDate || new Date().toISOString().split("T")[0]}
             />
           </div>
           <button
@@ -155,7 +195,7 @@ const CarDetails = () => {
           <p className="text-center text-sm">
             No Credit Card required to reserve
           </p>
-        </form>
+        </motion.form>
       </div>
     </div>
   ) : (

@@ -4,14 +4,13 @@ import { useAppContext } from "../../context/AppContext";
 import toast from "react-hot-toast";
 
 const ManageBookings = () => {
-
-  const {axios, currency } = useAppContext();
+  const { axios, currency } = useAppContext();
 
   const [bookings, setBookings] = useState([]);
 
   const fetchOwnerBookings = async () => {
     try {
-      const {data} = await axios.get('/api/bookings/owner');
+      const { data } = await axios.get("/api/bookings/owner");
       data.success ? setBookings(data.bookings) : toast.error(data.message);
     } catch (error) {
       toast.error(error.message);
@@ -20,7 +19,10 @@ const ManageBookings = () => {
 
   const changeBookingStatus = async (bookingId, status) => {
     try {
-      const {data} = await axios.get('/api/bookings/change-status',{bookingId, status});
+      const { data } = await axios.post("/api/bookings/change-status", {
+        bookingid: bookingId,
+        status,
+      });
       if (data.success) {
         toast.success(data.message);
         fetchOwnerBookings();
@@ -87,7 +89,10 @@ const ManageBookings = () => {
                 </td>
                 <td className="p-3">
                   {booking.status === "pending" ? (
-                    <select onChange={e=>changeBookingStatus(booking._id, e.target.value)}
+                    <select
+                      onChange={(e) =>
+                        changeBookingStatus(booking._id, e.target.value)
+                      }
                       value={booking.status}
                       className="px-2 py-1.5 mt-1 text-gray-500 border
                     border-borderColor rounded-md outline-none"
@@ -99,7 +104,11 @@ const ManageBookings = () => {
                   ) : (
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-semibold 
-                    ${booking.status === "confirmed" ? "bg-green-100 text-green-500 " : "bg-red-100 text-red-500"}`}
+                    ${
+                      booking.status === "confirmed"
+                        ? "bg-green-100 text-green-500 "
+                        : "bg-red-100 text-red-500"
+                    }`}
                     >
                       {booking.status}
                     </span>

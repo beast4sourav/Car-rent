@@ -109,7 +109,7 @@ export const getDashboardData = async (req, res) => {
   try {
     const { _id, role } = req.user;
     if (role !== "owner") {
-      res.json({ success: false, message: "Unauthorized" });
+      return res.json({ success: false, message: "Unauthorized" });
     }
 
     const cars = await Car.find({ owner: _id });
@@ -125,10 +125,48 @@ export const getDashboardData = async (req, res) => {
       status: "confirmed",
     });
 
-    const monthlyRevenue = bookings
-      .slice()
-      .filter((booking) => booking.status === "confirmed")
-      .reduce((acc, booking) => acc + booking.price, 0);
+    // Calculate monthly revenue for current month
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth();
+    const currentYear = currentDate.getFullYear();
+
+    // Get confirmed bookings for current month
+    const monthlyBookings = await Booking.find({
+      owner: _id,
+      status: "confirmed",
+      createdAt: {
+        $gte: new Date(currentYear, currentMonth, 1), // First day of current month
+        $lt: new Date(currentYear, currentMonth + 1, 1), // First day of next month
+      },
+    });
+
+    const monthlyRevenue = monthlyBookings.reduce((acc, booking) => {
+      const price = Number(booking.price) || 0;
+      return acc + price;
+    }, 0);
+
+    // Debug logging
+    console.log(`Monthly revenue calculation for owner ${_id}:`);
+    console.log(`- Current month: ${currentMonth + 1}/${currentYear}`);
+    console.log(
+      `- Number of confirmed bookings this month: ${monthlyBookings.length}`
+    );
+    console.log(`- Monthly revenue: ${monthlyRevenue}`);
+    console.log(
+      `- Booking details:`,
+      monthlyBookings.map((b) => ({
+        id: b._id,
+        price: b.price,
+        createdAt: b.createdAt,
+        status: b.status,
+      }))
+    );
+
+    // Calculate total car value (sum of all car prices per day)
+    const totalCarValue = cars.reduce((acc, car) => {
+      const price = Number(car.pricePerDay) || 0;
+      return acc + price;
+    }, 0);
 
     const dashboardData = {
       totalCars: cars.length,
@@ -136,7 +174,8 @@ export const getDashboardData = async (req, res) => {
       pendingBookings: pendingBookings.length,
       completedBookings: completedBookings.length,
       recentBookings: bookings.slice(0, 3),
-      monthlyRevenue,
+      monthlyRevenue: Math.max(0, monthlyRevenue), // Ensure non-negative
+      totalCarValue: Math.max(0, totalCarValue), // Total value of all cars
     };
     res.json({ success: true, dashboardData });
   } catch (error) {

@@ -14,6 +14,7 @@ const Dashboard = () => {
     completedBookings: 0,
     recentBookings: [],
     monthlyRevenue: 0,
+    totalCarValue: 0,
   });
   const dashboardCards = [
     {
@@ -36,18 +37,28 @@ const Dashboard = () => {
       value: data.completedBookings,
       icon: assets.listIconColored,
     },
+    {
+      title: "Total Car Value",
+      value: `${currency}${Math.max(
+        0,
+        data.totalCarValue || 0
+      ).toLocaleString()}`,
+      icon: assets.carIconColored,
+    },
   ];
 
   const fetchDashboardData = async () => {
     try {
       const { data } = await axios.get("/api/owner/dashboard");
       if (data.success) {
+        console.log("Dashboard data:", data.dashboardData); // Debug log
         setData(data.dashboardData);
       } else {
         toast.error(data.message);
       }
     } catch (error) {
-      toast.error(error.message);
+      console.error("Dashboard fetch error:", error);
+      toast.error("Failed to fetch dashboard data");
     }
   };
 
@@ -93,42 +104,60 @@ const Dashboard = () => {
         >
           <h1 className="text-lg font-medium">Recent Bookings</h1>
           <p className="text-gray-500">Latest customer bookings</p>
-          {data.recentBookings.map((booking, index) => (
-            <div key={index} className="mt-4 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div
-                  className="hidden md:flex items-center justify-center w-12
-                        h-12 rounded-full bg-primary/10"
-                >
-                  <img
-                    src={assets.listIconColored}
-                    alt=""
-                    className="h-5 w-5"
-                  />
-                </div>
-                <div>
-                  <p>
-                    {booking.car.brand} {booking.car.model}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    {booking.createdAt.split("T")[0]}
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 font-medium">
-                <p className="text-sm text-gray-500">
-                  {currency}
-                  {booking.price}
-                </p>
-                <p
-                  className="px-3 py-0.5 border-borderColor rounded-full
-                        text-sm"
-                >
-                  {booking.status}
-                </p>
-              </div>
+          {data.recentBookings.length === 0 ? (
+            <div className="text-center py-6">
+              <p className="text-gray-500">No recent bookings</p>
             </div>
-          ))}
+          ) : (
+            data.recentBookings.map((booking, index) => (
+              <div
+                key={index}
+                className="mt-4 flex items-center justify-between"
+              >
+                <div className="flex items-center gap-2">
+                  <div
+                    className="hidden md:flex items-center justify-center w-12
+                          h-12 rounded-full bg-primary/10"
+                  >
+                    <img
+                      src={assets.listIconColored}
+                      alt=""
+                      className="h-5 w-5"
+                    />
+                  </div>
+                  <div>
+                    <p>
+                      {booking.car.brand} {booking.car.model}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {booking.createdAt.split("T")[0]}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 font-medium">
+                  <p className="text-sm text-gray-500">
+                    {currency}
+                    {Math.max(
+                      0,
+                      booking.car?.pricePerDay || 0
+                    ).toLocaleString()}
+                    /day
+                  </p>
+                  <p
+                    className={`px-3 py-0.5 rounded-full text-sm ${
+                      booking.status === "confirmed"
+                        ? "bg-green-100 text-green-600"
+                        : booking.status === "pending"
+                        ? "bg-yellow-100 text-yellow-600"
+                        : "bg-red-100 text-red-600"
+                    }`}
+                  >
+                    {booking.status}
+                  </p>
+                </div>
+              </div>
+            ))
+          )}
         </div>
 
         <div
@@ -139,7 +168,7 @@ const Dashboard = () => {
           <p className="text-gray-500">Revenue for current month</p>
           <p className="text-3xl mt-6 font-semibold text-primary">
             {currency}
-            {data.monthlyRevenue}
+            {Math.max(0, data.monthlyRevenue || 0).toLocaleString()}
           </p>
         </div>
       </div>

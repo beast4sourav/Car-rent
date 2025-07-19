@@ -36,16 +36,34 @@ export const createBooking = async (req, res) => {
   try {
     const { _id } = req.user;
     const { car, pickupDate, returnDate } = req.body;
+
+    // Validate dates
+    const picked = new Date(pickupDate);
+    const returned = new Date(returnDate);
+
+    if (isNaN(picked.getTime()) || isNaN(returned.getTime())) {
+      return res.json({ success: false, message: "Invalid dates provided" });
+    }
+
+    if (returned <= picked) {
+      return res.json({
+        success: false,
+        message: "Return date must be after pickup date",
+      });
+    }
+
     const isAvailable = await checkAvailability(car, pickupDate, returnDate);
     if (!isAvailable) {
       return res.json({ success: false, message: "Car is not available" });
     }
-    const carData = await Car.findById(car);
 
-    const picked = new Date(pickupDate);
-    const returned = new Date(returnDate);
+    const carData = await Car.findById(car);
+    if (!carData) {
+      return res.json({ success: false, message: "Car not found" });
+    }
+
     const noOfDays = Math.ceil((returned - picked) / (1000 * 60 * 60 * 24));
-    const price = carData.pricePerDay * noOfDays;
+    const price = Math.max(0, carData.pricePerDay * noOfDays); // Ensure non-negative price
 
     await Booking.create({
       car,
