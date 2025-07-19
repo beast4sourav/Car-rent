@@ -22,7 +22,7 @@ const CarCard = ({ car }) => {
         />
         {car.isAvailable && (
           <p
-            className="absolute top-4 left-4 bg-primary/90
+            className="absolute top-4 left-4 bg-blue-500
          text-white text-xs px-2.5 py-1 rounded-full"
           >
             Available Now

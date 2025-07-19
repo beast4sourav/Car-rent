@@ -3,7 +3,7 @@ import { assets, menuLinks } from "../assets/assets";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAppContext } from "../context/AppContext";
 import toast from "react-hot-toast";
-import {motion} from 'motion/react'
+import { motion } from "motion/react";
 
 const Navbar = () => {
   const { setShowLogin, user, logout, isOwner, axios, setIsOwner, setToken } =
@@ -31,14 +31,21 @@ const Navbar = () => {
   };
 
   return (
-    <motion.div initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.5 }}
+    <motion.div
+      initial={{ y: -20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5 }}
       className={`flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 py-4 text-gray-600
     border-b border-borderColor relative transition-all 
     ${location.pathname === "/" && "bg-light"}`}
     >
       <Link to="/">
-        <motion.img whileHover={{ scale: 1.05 }}
-        className="h-8" src={assets.logo} alt="logo" />
+        <motion.img
+          whileHover={{ scale: 1.05 }}
+          className="h-12"
+          src={assets.lambo}
+          alt="logo"
+        />
       </Link>
 
       <div
@@ -49,7 +56,12 @@ const Navbar = () => {
       ${open ? "max-sm:translate-x-0" : "max-sm:translate-x-full"}`}
       >
         {menuLinks.map((link, index) => (
-          <Link key={index} to={link.path} onClick={() => setOpen(false)}>
+          <Link
+            key={index}
+            to={link.path}
+            onClick={() => setOpen(false)}
+            className="px-3 py-2 rounded-md transition-colors duration-200 hover:bg-blue-50 hover:text-blue-600 focus:bg-blue-100 focus:text-blue-700"
+          >
             {link.name}
           </Link>
         ))}
@@ -78,8 +90,8 @@ const Navbar = () => {
             onClick={() => {
               user ? logout() : setShowLogin(true);
             }}
-            className="cursor-pointer px-8 py-2 bg-primary
-          hover:bg-primary-dull transition-all text-white rounded-lg"
+            className="cursor-pointer px-8 py-2 bg-blue-500
+          hover:bg-blue-700 transition-all text-white rounded-lg"
           >
             {user ? "Logout" : "Login"}
           </button>

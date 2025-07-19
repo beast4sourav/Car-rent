@@ -50,7 +50,7 @@ const Hero = () => {
         onSubmit={handleSearch}
         className="flex flex-col md:flex-row items-start md:items-center
       justify-between p-6 rounded-lg md:rounded-full w-full max-w-80 md:max-w-200 
-      bg-white shadow-[0px_8px_20px_rgba(0,0,0,0.1)]"
+      bg-blue-100 shadow-[0px_8px_20px_rgba(0,0,0,0.1)]"
       >
         <div
           className="flex flex-col md:flex-row items-start md:items-center
@@ -104,7 +104,7 @@ const Hero = () => {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           className="flex items-center justify-center gap-1 px-9 py-3 
-          max-sm:mt-4 bg-primary hover:bg-primary-dull text-white rounded-full"
+          max-sm:mt-4 bg-blue-500 hover:bg-blue-dull text-white rounded-full"
         >
           <img
             src={assets.search_icon}
@@ -118,9 +118,9 @@ const Hero = () => {
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, delay: 0.6 }}
-        src={assets.main_car}
+        src={assets.aston}
         alt="car"
-        className="max-h-74"
+        className="max-h-110"
       />
     </motion.div>
   );

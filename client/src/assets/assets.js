@@ -40,11 +40,17 @@ import car_image1 from "./car_image1.png";
 import car_image2 from "./car_image2.png";
 import car_image3 from "./car_image3.png";
 import car_image4 from "./car_image4.png";
+import car_logo from "./car_logo.png";
+import lambo from "./lambo.png";
+import aston from "./aston.png";
 
 export const cityList = ["Roorkee", "Dehradun", "Houston", "Chicago"];
 
 export const assets = {
+  aston,
+  lambo,
   logo,
+  car_logo,
   gmail_logo,
   facebook_logo,
   instagram_logo,
